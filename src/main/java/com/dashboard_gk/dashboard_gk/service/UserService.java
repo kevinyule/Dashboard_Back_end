@@ -18,10 +18,10 @@ public class UserService implements IUserService {
 
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO){
         User user = new User();
-        user.setName(userRequestDTO.name());
-        user.setLastName(userRequestDTO.lastName());
-        user.setEmail(userRequestDTO.email());
-        user.setPassword(userRequestDTO.password());
+        user.setName(userRequestDTO.getName());
+        user.setLastName(userRequestDTO.getLastName());
+        user.setEmail(userRequestDTO.getEmail());
+        user.setPassword(userRequestDTO.getPassword());
 
         User savedUser = userRepository.save(user);
 

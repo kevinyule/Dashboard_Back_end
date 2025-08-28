@@ -1,8 +1,15 @@
 package com.dashboard_gk.dashboard_gk.dto;
 
-public record UserResponseDTO(
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-        String name,
-        String lastName,
-        String email
-) { }
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserResponseDTO {
+
+    String name;
+    String lastName;
+    String email;
+}
