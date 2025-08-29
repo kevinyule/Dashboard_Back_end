@@ -1,34 +1,55 @@
 package com.dashboard_gk.dashboard_gk.service;
 
-import com.dashboard_gk.dashboard_gk.dto.UserRequestDTO;
-import com.dashboard_gk.dashboard_gk.dto.UserResponseDTO;
+import com.dashboard_gk.dashboard_gk.dto.user.CreateUserRequestDTO;
+import com.dashboard_gk.dashboard_gk.dto.user.LoginRequestDTO;
+import com.dashboard_gk.dashboard_gk.dto.user.UserResponseDTO;
 import com.dashboard_gk.dashboard_gk.interfaces.IUserService;
 import com.dashboard_gk.dashboard_gk.model.User;
 import com.dashboard_gk.dashboard_gk.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService implements IUserService {
 
-    private final UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    public UserResponseDTO createUser(CreateUserRequestDTO createUserRequestDTO){
 
-    public UserResponseDTO createUser(UserRequestDTO userRequestDTO){
+
+        if (userRepository.existsByEmail(createUserRequestDTO.getEmail())) {
+            throw new IllegalArgumentException("El email ya está registrado");
+        }
+        String password = createUserRequestDTO.getPassword();
+        String hashedPassword = new BCryptPasswordEncoder().encode(password);
+
         User user = new User();
-        user.setName(userRequestDTO.getName());
-        user.setLastName(userRequestDTO.getLastName());
-        user.setEmail(userRequestDTO.getEmail());
-        user.setPassword(userRequestDTO.getPassword());
+        user.setFirstName(createUserRequestDTO.getFirstName());
+        user.setSecondName(createUserRequestDTO.getSecondName());
+        user.setFirstLastName(createUserRequestDTO.getFirstLastName());
+        user.setSecondLastName(createUserRequestDTO.getSecondLastName());
+        user.setEmail(createUserRequestDTO.getEmail());
+        user.setPassword(hashedPassword);
 
         User savedUser = userRepository.save(user);
 
         return new UserResponseDTO(
-                savedUser.getName(),
-                savedUser.getLastName(),
+                savedUser.getFirstName(),
+                savedUser.getSecondName(),
+                savedUser.getFirstLastName(),
+                savedUser.getSecondLastName(),
                 savedUser.getEmail()
         );
+    }
+
+    @Override
+    public boolean isUserValid(LoginRequestDTO loginRequestDTO) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        String password = loginRequestDTO.getPassword();
+
+        return userRepository.findByEmail(loginRequestDTO.getEmail()).filter(user -> passwordEncoder.matches(password, user.getPassword())).isPresent();
     }
 }
