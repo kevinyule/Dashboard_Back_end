@@ -1,4 +1,4 @@
-FROM maven:3-amazoncorretto-17 AS builder
+FROM maven:3.9.6-eclipse-temurin-17 AS builder
 
 LABEL authors="GabrielSalazarLozada"
 
@@ -13,7 +13,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Etapa 2: Imagen final más ligera
-FROM amazoncorretto:17
+FROM eclipse-temurin:17-jdk-alpine
 
 # Crear directorio de trabajo
 WORKDIR /app

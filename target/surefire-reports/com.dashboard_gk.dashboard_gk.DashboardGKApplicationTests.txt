@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.dashboard_gk.dashboard_gk.DashboardGKApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.606 s -- in com.dashboard_gk.dashboard_gk.DashboardGKApplicationTests
