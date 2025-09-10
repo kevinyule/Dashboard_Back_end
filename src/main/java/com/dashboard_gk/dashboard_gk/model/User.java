@@ -31,6 +31,4 @@ public class User {
     @CreatedDate
     private LocalDateTime registrationDate;
 
-    @DBRef
-    private List<Movements>  movements;
 }

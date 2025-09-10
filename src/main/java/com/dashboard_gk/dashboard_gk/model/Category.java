@@ -16,9 +16,6 @@ import java.time.LocalDateTime;
 public class Category {
     @Id
     private String id;
-
     private String description;
-
-    @CreatedDate
-    private LocalDateTime registrationDate;
+    private String typeId;
 }

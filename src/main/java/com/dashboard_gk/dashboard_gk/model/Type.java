@@ -16,9 +16,5 @@ import java.time.LocalDateTime;
 public class Type {
     @Id
     private String id;
-
     private String description;
-
-    @CreatedDate
-    private LocalDateTime registrationDate;
 }

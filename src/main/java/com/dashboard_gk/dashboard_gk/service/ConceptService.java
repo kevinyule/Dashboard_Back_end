@@ -12,11 +12,13 @@ public class ConceptService implements IConceptService {
     @Autowired
     ConceptRepository conceptRepository;
 
-    public Concept createConcept(Concept conceptRequest){
+    public void createConcept(Concept conceptRequest){
 
         Concept concept = new Concept();
+        concept.setUserId(conceptRequest.getUserId());
+        concept.setCategoryId(conceptRequest.getCategoryId());
+        concept.setTypeId(conceptRequest.getTypeId());
         concept.setDescription(conceptRequest.getDescription());
-
-        return conceptRepository.save(concept);
+        conceptRepository.save(concept);
     }
 }

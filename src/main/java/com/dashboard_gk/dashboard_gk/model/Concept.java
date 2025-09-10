@@ -18,12 +18,10 @@ import java.time.LocalDateTime;
 public class Concept {
     @Id
     private String id;
-
     private String userId;
     private String description;
-
-    @DBRef
-    private Category category;
+    private String categoryId;
+    private String typeId;
 
     @CreatedDate
     private LocalDateTime registrationDate;

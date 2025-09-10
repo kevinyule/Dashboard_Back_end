@@ -22,9 +22,10 @@ public class Movements {
 
     private BigDecimal budget;
     private BigDecimal amount;
-
-    @DBRef
-    private Concept concept;
+    private String userId;
+    private String conceptId;
+    private String categoryId;
+    private String typeId;
 
     @CreatedDate
     private LocalDateTime registrationDate;

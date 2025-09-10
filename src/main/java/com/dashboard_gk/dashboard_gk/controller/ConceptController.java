@@ -25,15 +25,14 @@ public class ConceptController {
     IConceptService conceptService;
 
     @PostMapping("/create-concept")
-    public ResponseEntity<ObjectResponse> createCategory(@Valid @RequestBody Concept conceptRequest) {
+    public ResponseEntity<ObjectResponse> createConcept(@RequestBody Concept conceptRequest) {
 
         ObjectResponse response = new ObjectResponse();
         response.setStatusCode(0);
         response.setMessage("Concepto creado exitosamente");
         try {
             LOG.info("Creando Concepto: {}", conceptRequest);
-            Concept savedConcept = conceptService.createConcept(conceptRequest);
-            response.setObject(savedConcept);
+            conceptService.createConcept(conceptRequest);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.setStatusCode(-1);
