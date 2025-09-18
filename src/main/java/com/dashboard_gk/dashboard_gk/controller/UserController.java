@@ -63,4 +63,8 @@ public class UserController {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
+    public String isRunning() {
+        return "Hola Mundo!!";
+    }
 }
