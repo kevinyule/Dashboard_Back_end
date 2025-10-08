@@ -20,7 +20,6 @@ public class RegisterRequestDTO {
     @NotBlank(message = "El primer apellido es requerido")
     private String firstLastName;
 
-    @NotBlank(message = "El segundo apellido es requerido")
     private String secondLastName;
 
     @NotBlank(message = "El username es obligatorio")
