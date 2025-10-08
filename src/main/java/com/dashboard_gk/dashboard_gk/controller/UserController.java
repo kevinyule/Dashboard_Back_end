@@ -1,7 +1,7 @@
 package com.dashboard_gk.dashboard_gk.controller;
 
-import com.dashboard_gk.dashboard_gk.dto.user.CreateUserRequestDTO;
-import com.dashboard_gk.dashboard_gk.dto.user.LoginRequestDTO;
+import com.dashboard_gk.dashboard_gk.dto.auth.RegisterRequestDTO;
+import com.dashboard_gk.dashboard_gk.dto.auth.AuthenticationRequestDTO;
 import com.dashboard_gk.dashboard_gk.dto.user.UserResponseDTO;
 import com.dashboard_gk.dashboard_gk.interfaces.IUserService;
 import com.dashboard_gk.dashboard_gk.response.ObjectResponse;
@@ -22,14 +22,14 @@ public class UserController {
     IUserService userService;
 
     @PostMapping("/create-user")
-    public ResponseEntity<ObjectResponse> createUser(@Valid @RequestBody CreateUserRequestDTO createUserRequestDTO){
+    public ResponseEntity<ObjectResponse> createUser(@Valid @RequestBody RegisterRequestDTO registerRequestDTO){
 
         ObjectResponse response = new ObjectResponse();
         response.setStatusCode(0);
         response.setMessage("Usuario creado exitosamente");
         try {
-            LOG.info("Creando Usuario: {}", createUserRequestDTO);
-            UserResponseDTO userResponseDTO = userService.createUser(createUserRequestDTO);
+            LOG.info("Creando Usuario: {}", registerRequestDTO);
+            UserResponseDTO userResponseDTO = userService.createUser(registerRequestDTO);
             response.setObject(userResponseDTO);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -43,14 +43,14 @@ public class UserController {
 
 
     @PostMapping("/is-user-valid")
-    public ResponseEntity<ObjectResponse> isUserValid(@Valid @RequestBody LoginRequestDTO loginRequestDTO){
+    public ResponseEntity<ObjectResponse> isUserValid(@Valid @RequestBody AuthenticationRequestDTO authenticationRequestDTO){
 
         ObjectResponse response = new ObjectResponse();
         response.setStatusCode(0);
         response.setMessage("El usuario existe en la base de datos");
         try {
-            LOG.info("Validando Usuario: {}", loginRequestDTO);
-            boolean isUserValid = userService.isUserValid(loginRequestDTO);
+            LOG.info("Validando Usuario: {}", authenticationRequestDTO);
+            boolean isUserValid = userService.isUserValid(authenticationRequestDTO);
             if (!isUserValid) response.setMessage("El usuario no existe en la base de datos");
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -61,8 +61,21 @@ public class UserController {
         }
     }
 
-    @GetMapping("/is-running")
-    public String isRunning() {
-        return "Hola Mundo!!";
-    }
+/*
+    @GetMapping("/get-all-users")
+    public  ResponseEntity<ObjectResponse> getAllUsers(){
+        ObjectResponse response = new ObjectResponse();
+        response.setStatusCode(0);
+        response.setMessage("Usuarios obtenidos exitosamente");
+        try {
+            LOG.info("Obteniendo todos los usuarios");
+            response.setObject(userService.getAllUsers());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.setStatusCode(-1);
+            response.setMessage("Error al obtener usuarios: " + e.getMessage());
+            LOG.error("\"Error al obtener usuarios: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }*/
 }
