@@ -61,7 +61,7 @@ public class UserController {
         }
     }
 
-/*
+
     @GetMapping("/get-all-users")
     public  ResponseEntity<ObjectResponse> getAllUsers(){
         ObjectResponse response = new ObjectResponse();
@@ -77,5 +77,5 @@ public class UserController {
             LOG.error("\"Error al obtener usuarios: {}", e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
-    }*/
+    }
 }

@@ -59,11 +59,17 @@ public class AuthenticationService {
 
             // Retornar la respuesta
             return AuthenticationResponse.builder()
-                    .token(jwtToken)
+                    .accessToken(jwtToken)
                     .username(user.getUsername())
                     .email(user.getEmail())
+                    .firstName(user.getFirstName())
+                    .secondName(user.getSecondName())
+                    .firstLastName(user.getFirstLastName())
+                    .secondLastName(user.getSecondLastName())
+                    .roles(user.getRoles())
                     .message("Usuario registrado exitosamente")
                     .build();
+
         } catch (Exception e) {
             response.setMessage("Error al registrar el usuario: " + e.getMessage());
             return response;
@@ -97,10 +103,17 @@ public class AuthenticationService {
             var jwtToken = jwtService.generateToken(user);
 
             // Configurar la respuesta exitosa
-            response.setToken(jwtToken);
+            response.setAccessToken(jwtToken);
             response.setUsername(user.getUsername());
             response.setEmail(user.getEmail());
+            response.setFirstName(user.getFirstName());
+            response.setSecondName(user.getSecondName());
+            response.setFirstLastName(user.getFirstLastName());
+            response.setSecondLastName(user.getSecondLastName());
+            response.setRoles(user.getRoles());
             response.setMessage("Autenticación exitosa");
+
+
 
         } catch (BadCredentialsException e) {
             response.setMessage("Credenciales inválidas");

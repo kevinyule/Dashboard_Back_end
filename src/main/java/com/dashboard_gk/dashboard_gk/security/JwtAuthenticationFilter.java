@@ -1,6 +1,9 @@
 package com.dashboard_gk.dashboard_gk.security;
 
 import com.dashboard_gk.dashboard_gk.service.JwtService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
@@ -28,52 +31,62 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
-    ) throws ServletException, IOException {
+    ) throws IOException {
 
-        // Extraer el header Authorization
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String username;
 
-        // Verificar si el header existe y comienza con "Bearer "
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        // Extraer el token (después de "Bearer ")
-        jwt = authHeader.substring(7);
-
-        // Extraer el username del token
-        username = jwtService.extractUsername(jwt);
-
-        // Si tenemos username y no hay autenticación previa
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-            // Cargar los detalles del usuario desde la base de datos
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-
-            // Validar el token
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-
-                // Crear el objeto de autenticación
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-
-                // Agregar detalles de la petición
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
-
-                // Actualizar el SecurityContext
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+        try {
+            // Verificar si el header Authorization está presente y tiene formato correcto
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                filterChain.doFilter(request, response);
+                return;
             }
-        }
 
-        // Continuar con la cadena de filtros
-        filterChain.doFilter(request, response);
+            jwt = authHeader.substring(7);
+            username = jwtService.extractUsername(jwt);
+
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+
+                if (jwtService.isTokenValid(jwt, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            }
+
+            // Continuar con la cadena de filtros
+            filterChain.doFilter(request, response);
+
+        } catch (ExpiredJwtException e) {
+            // Token expirado
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"Token expirado\"}");
+
+        } catch (SignatureException e) {
+            //
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"Firma del token inválida\"}");
+
+        } catch (MalformedJwtException e) {
+            // Token mal formado
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"Token malformado \"}");
+        } catch (Exception e) {
+            // 🚫 Cualquier otro error
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"No autorizado\"}");
+        }
     }
 }
